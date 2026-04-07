@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/authAPI';
+import { roleNavigationStrategy } from '../services/roleNavigationStrategy';
 import './Auth.css';
 
 function Login() {
@@ -48,14 +49,13 @@ function Login() {
         localStorage.setItem('user', JSON.stringify(response.data));
         localStorage.setItem('userRole', response.data.roleId);
 
-        // Redirect based on role
-        if (response.data.roleId === 1) {
-          // Patient dashboard
-          navigate('/patient-dashboard');
-        } else if (response.data.roleId === 2) {
-          // Clinic staff dashboard
-          navigate('/clinic-dashboard');
+        const dashboardPath = roleNavigationStrategy.getDashboardPathByRoleId(response.data.roleId);
+        if (dashboardPath) {
+          navigate(dashboardPath);
+          return;
         }
+
+        setError('Unsupported user role');
       } else {
         setError(response.data.message || 'Login failed');
       }

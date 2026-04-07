@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { roleNavigationStrategy } from '../services/roleNavigationStrategy';
 import './Dashboard.css';
 
 function PatientDashboard() {
@@ -12,7 +13,7 @@ function PatientDashboard() {
     const userString = localStorage.getItem('user');
     const userRole = localStorage.getItem('userRole');
 
-    if (!userString || userRole !== '1') {
+     if (!userString || !roleNavigationStrategy.canAccessDashboard(userRole, roleNavigationStrategy.roleIds.patient)) {
       navigate('/login');
       return;
     }
