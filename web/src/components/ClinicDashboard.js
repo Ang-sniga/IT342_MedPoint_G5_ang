@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { roleNavigationStrategy } from '../services/roleNavigationStrategy';
 import './Dashboard.css';
+import ClinicStaffPanel from './ClinicStaffPanel';
 
 function ClinicDashboard() {
   const navigate = useNavigate();
@@ -55,29 +56,25 @@ function ClinicDashboard() {
 
         <div className="dashboard-grid">
           <div className="dashboard-card">
-            <h3>📅 Schedule Management</h3>
-            <p>Manage clinic schedules and appointments</p>
-            <button className="card-button">Manage Schedule</button>
+            <h3>🗓️ Schedule Management</h3>
+            <p>Manage doctor schedules and appointments</p>
+            <button className="card-button" onClick={() => navigate('/clinic/schedules')}>Manage Schedule</button>
           </div>
 
           <div className="dashboard-card">
             <h3>👥 Patient Management</h3>
-            <p>View and manage patient records</p>
-            <button className="card-button">View Patients</button>
+            <p>View approved appointments and patient records</p>
+            <button className="card-button" onClick={() => navigate('/clinic/patients')}>View Patients</button>
           </div>
 
           <div className="dashboard-card">
-            <h3>📊 Reports</h3>
-            <p>Generate and view clinic reports</p>
-            <button className="card-button">View Reports</button>
-          </div>
-
-          <div className="dashboard-card">
-            <h3>⚙️ Settings</h3>
-            <p>Manage clinic settings and preferences</p>
-            <button className="card-button">Clinic Settings</button>
+            <h3>📄 Reports</h3>
+            <p>View pending appointments for review</p>
+            <button className="card-button" onClick={() => navigate('/clinic/reports')}>View Reports</button>
           </div>
         </div>
+
+        <ClinicStaffPanel />
 
         <div className="user-info-section">
           <h3>Staff Information</h3>

@@ -121,11 +121,12 @@ function PatientDashboard() {
 
       try {
         const [appointmentsResponse, schedulesResponse] = await Promise.all([
-          appointmentAPI.getUserAppointments(userData.id),
+          appointmentAPI.getUserApprovedAppointments(userData.id),
           appointmentAPI.getDoctorSchedules()
         ]);
 
         const schedules = schedulesResponse.data || [];
+        // Only show approved (confirmed) appointments
         setAppointments(appointmentsResponse.data || []);
         setDoctorSchedules(schedules);
         setBookingForm((prev) => ({

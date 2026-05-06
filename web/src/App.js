@@ -4,6 +4,9 @@ import Register from './components/Register';
 import Login from './components/Login';
 import PatientDashboard from './components/PatientDashboard';
 import ClinicDashboard from './components/ClinicDashboard';
+import ScheduleManagement from './components/ScheduleManagement';
+import ClinicPatientManagement from './components/ClinicPatientManagement';
+import ClinicReports from './components/ClinicReports';
 import './App.css';
 
 function App() {
@@ -15,6 +18,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/patient-dashboard" element={<PatientDashboard />} />
         <Route path="/clinic-dashboard" element={<ClinicDashboard />} />
+        <Route path="/clinic/schedules" element={<ScheduleManagement />} />
+        <Route path="/clinic/patients" element={<ClinicPatientManagement />} />
+        <Route path="/clinic/reports" element={<ClinicReports />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

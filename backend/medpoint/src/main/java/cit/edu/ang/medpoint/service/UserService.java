@@ -68,6 +68,13 @@ public class UserService {
             response.setMessage("Invalid role. Use 1 for PATIENT or 2 for CLINIC_STAFF");
             return response;
         }
+
+        // Enforce single clinic staff account
+        if (userRole == UserRole.CLINIC_STAFF && userRepository.existsByRole(UserRole.CLINIC_STAFF)) {
+            response.setSuccess(false);
+            response.setMessage("A clinic staff account already exists");
+            return response;
+        }
         
         // Create new user
         User user = new User();

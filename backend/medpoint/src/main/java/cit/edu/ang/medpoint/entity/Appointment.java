@@ -51,7 +51,7 @@ public class Appointment {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         if (status == null) {
-            status = AppointmentStatus.CONFIRMED;
+            status = AppointmentStatus.PENDING;
         }
     }
 

@@ -1,3 +1,8 @@
+.root-reset, html, body, #root {
+  margin: 0;
+  padding: 0;
+}
+
 /* Navbar */
 .navbar {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -56,6 +61,7 @@
 .dashboard-container {
   min-height: 100vh;
   background: #eef2f7;
+  padding-top: 72px;
 }
 
 .dashboard-content {
@@ -501,3 +507,76 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Schedule Management */
+.schedules-container {
+  display: grid;
+  gap: 18px;
+}
+
+.schedule-list {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 6px rgba(14, 30, 62, 0.06);
+}
+
+.schedule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.schedule-item:last-child { border-bottom: none; }
+
+.schedule-item .meta {
+  color: #333;
+  font-weight: 600;
+}
+
+.schedule-item .small {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.form-panel {
+  background: #fff;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(14, 30, 62, 0.06);
+}
+
+.form-panel input,
+.form-panel select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #e6eef8;
+  margin-bottom: 10px;
+}
+
+.form-actions { display:flex; gap:8px; justify-content:flex-end; }
+
+.btn-ghost { background: transparent; border: 1px solid #dbe6fb; color:#24409a; padding:8px 12px; border-radius:6px; }
+.btn-primary { background:#24409a; color:white; padding:8px 12px; border-radius:6px; border:none; }
+.btn-secondary { background: #6b7280; color: white; padding:8px 12px; border-radius:6px; border:none; }
+.btn-danger { background: #a0382b; color: white; padding:8px 12px; border-radius:6px; border:none; }
+.back-button { background: transparent; color:#24409a; border:1px solid #dbe6fb; padding:8px 12px; border-radius:6px; cursor:pointer; }
+
+/* Patient Management / Reports */
+.record-list { display: grid; gap:12px; }
+.record-item { background:#fff; padding:18px; border-radius:10px; box-shadow:0 1px 6px rgba(14,30,62,0.06); }
+.record-item h4 { margin:0 0 8px 0; color:#1d2f6f; }
+.record-item .notes { margin-top:8px; color:#4f5d79; font-size:14px; }
+
+.action-row { margin-top:10px; display:flex; gap:8px; }
+
+/* Spacing for clinic panel when embedded in dashboard */
+.clinic-panel {
+  margin-bottom: 36px;
+  padding: 18px;
+  border-radius: 10px;
+}
+

@@ -67,6 +67,46 @@ public class AppointmentService {
         return response;
     }
 
+        // Schedule management methods for clinic staff
+        public java.util.List<cit.edu.ang.medpoint.dto.DoctorDutyScheduleResponse> getAllSchedules() {
+            return doctorDutyScheduleRepository.findAllByOrderByDoctorNameAscDutyDayAscDutyTimeAsc()
+                .stream()
+                .map(s -> {
+                    var r = new cit.edu.ang.medpoint.dto.DoctorDutyScheduleResponse();
+                    r.setId(s.getId());
+                    r.setDoctorName(s.getDoctorName());
+                    r.setSpecialization(s.getSpecialization());
+                    r.setDutyDay(s.getDutyDay().name());
+                    r.setDutyTime(s.getDutyTime().toString());
+                    return r;
+                })
+                .toList();
+        }
+
+        public void deleteSchedule(Long id) {
+            doctorDutyScheduleRepository.deleteById(id);
+        }
+
+        public cit.edu.ang.medpoint.dto.DoctorDutyScheduleResponse updateSchedule(Long id, cit.edu.ang.medpoint.dto.DoctorScheduleRequest request) {
+            var schedule = doctorDutyScheduleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Schedule not found"));
+
+            schedule.setDoctorName(request.getDoctorName().trim());
+            schedule.setSpecialization(request.getSpecialization().trim());
+            schedule.setDutyDay(java.time.DayOfWeek.valueOf(request.getDutyDay().trim().toUpperCase()));
+            schedule.setDutyTime(java.time.LocalTime.parse(request.getDutyTime().trim()));
+
+            var saved = doctorDutyScheduleRepository.save(schedule);
+
+            var r = new cit.edu.ang.medpoint.dto.DoctorDutyScheduleResponse();
+            r.setId(saved.getId());
+            r.setDoctorName(saved.getDoctorName());
+            r.setSpecialization(saved.getSpecialization());
+            r.setDutyDay(saved.getDutyDay().name());
+            r.setDutyTime(saved.getDutyTime().toString());
+            return r;
+        }
+
     public AppointmentResponse createAppointment(AppointmentRequest request) {
         validateRequest(request);
 
@@ -86,10 +126,84 @@ public class AppointmentService {
         );
 
         appointment.setNotes(normalizeNotes(request.getNotes()));
-        appointment.setStatus(AppointmentStatus.CONFIRMED);
+        appointment.setStatus(AppointmentStatus.PENDING);
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
         return mapToResponse(savedAppointment);
+    }
+
+    public List<AppointmentResponse> getPendingAppointments() {
+        return appointmentRepository.findByStatusOrderByAppointmentDateDescAppointmentTimeDesc(AppointmentStatus.PENDING)
+            .stream()
+            .map(this::mapToResponse)
+            .toList();
+    }
+
+    public List<AppointmentResponse> getAppointmentsByStatus(AppointmentStatus status) {
+        return appointmentRepository.findByStatusOrderByAppointmentDateDescAppointmentTimeDesc(status)
+            .stream()
+            .map(this::mapToResponse)
+            .toList();
+    }
+
+    public List<AppointmentResponse> getAppointmentsByUserAndStatus(Long userId, AppointmentStatus status) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+
+        return appointmentRepository.findAll()
+            .stream()
+            .filter(a -> a.getUser() != null && a.getUser().getId().equals(userId) && a.getStatus() == status)
+            .sorted((left, right) -> {
+                int dateCompare = right.getAppointmentDate().compareTo(left.getAppointmentDate());
+                if (dateCompare != 0) return dateCompare;
+                return right.getAppointmentTime().compareTo(left.getAppointmentTime());
+            })
+            .map(this::mapToResponse)
+            .toList();
+    }
+
+    public AppointmentResponse approveAppointment(Long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+            .orElseThrow(() -> new IllegalArgumentException("Appointment not found"));
+
+        appointment.setStatus(AppointmentStatus.CONFIRMED);
+        Appointment updated = appointmentRepository.save(appointment);
+        return mapToResponse(updated);
+    }
+
+    public AppointmentResponse rejectAppointment(Long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+            .orElseThrow(() -> new IllegalArgumentException("Appointment not found"));
+
+        appointment.setStatus(AppointmentStatus.REJECTED);
+        Appointment updated = appointmentRepository.save(appointment);
+        return mapToResponse(updated);
+    }
+
+    public void addDoctorSchedule(String doctorName, String specialization, String dutyDay, String dutyTime) {
+        if (doctorName == null || doctorName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Doctor name is required");
+        }
+
+        if (specialization == null || specialization.trim().isEmpty()) {
+            throw new IllegalArgumentException("Specialization is required");
+        }
+
+        try {
+            var day = java.time.DayOfWeek.valueOf(dutyDay.trim().toUpperCase());
+            var time = java.time.LocalTime.parse(dutyTime.trim());
+
+            var schedule = new DoctorDutySchedule();
+            schedule.setDoctorName(doctorName.trim());
+            schedule.setSpecialization(specialization.trim());
+            schedule.setDutyDay(day);
+            schedule.setDutyTime(time);
+
+            doctorDutyScheduleRepository.save(schedule);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Invalid day or time format");
+        }
     }
 
     public List<AppointmentResponse> getAppointmentsByUser(Long userId) {

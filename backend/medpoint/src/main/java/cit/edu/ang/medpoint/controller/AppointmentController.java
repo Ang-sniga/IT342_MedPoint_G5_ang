@@ -43,6 +43,17 @@ public class AppointmentController {
         }
     }
 
+    @GetMapping("/user/{userId}/approved")
+    public ResponseEntity<?> getUserApprovedAppointments(@PathVariable Long userId) {
+        try {
+            List<AppointmentResponse> response = appointmentService.getAppointmentsByUserAndStatus(userId, cit.edu.ang.medpoint.entity.AppointmentStatus.CONFIRMED);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", ex.getMessage()));
+        }
+    }
+
     @GetMapping("/doctors/schedules")
     public ResponseEntity<List<DoctorScheduleResponse>> getDoctorSchedules() {
         return ResponseEntity.ok(appointmentService.getDoctorSchedules());

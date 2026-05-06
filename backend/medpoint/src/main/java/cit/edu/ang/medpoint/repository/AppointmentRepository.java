@@ -1,6 +1,7 @@
 package cit.edu.ang.medpoint.repository;
 
 import cit.edu.ang.medpoint.entity.Appointment;
+import cit.edu.ang.medpoint.entity.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,5 @@ import java.util.Optional;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findByUserIdOrderByAppointmentDateDescAppointmentTimeDesc(Long userId);
     Optional<Appointment> findByIdAndUserId(Long appointmentId, Long userId);
+    List<Appointment> findByStatusOrderByAppointmentDateDescAppointmentTimeDesc(AppointmentStatus status);
 }
